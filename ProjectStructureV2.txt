@@ -1,0 +1,66 @@
+// Root Package: com.company.techradar
+
+com.company.techradar/
+├── application/                 // Application layer (Use cases & business logic)
+│   ├── service/                 // Services implementing business rules
+│   │   ├── TechItemService.java        // Handles logic related to Tech Items (CRUD, filtering, etc.)
+│   │   ├── GroupService.java           // Handles Group CRUD logic
+│   │   └── CategoryService.java        // Handles Category CRUD logic
+│   └── port/
+│       └── out/                 // Output ports (Driven Adapters interface)
+│           ├── TechItemRepository.java // Interface for TechItem DB interactions
+│           ├── GroupRepository.java    // Interface for Group DB interactions
+│           └── CategoryRepository.java // Interface for Category DB interactions
+│
+├── domain/                     // Core business domain (no framework-specific code here)
+│   ├── model/                  // Domain entities
+│   │   ├── TechItem.java        // Entity representing a technology (e.g., Spring Boot, Java)
+│   │   ├── Group.java           // Entity representing a group (e.g., JVM, Python)
+│   │   └── Category.java        // Entity representing a category (e.g., Dev Tools)
+│   └── enums/                  // Enum types for states, categories, etc.
+│       └── TechState.java       // Enum for state: ADOPT, TRIAL, ASSESS, HOLD, EXIT
+│
+├── adapter/
+│   ├── in/                     // Primary adapters (Input: REST/GraphQL)
+│   │   ├── rest/               // REST API layer
+│   │   │   ├── TechItemController.java   // REST controller for tech items
+│   │   │   ├── GroupController.java      // REST controller for groups
+│   │   │   └── CategoryController.java   // REST controller for categories
+│   │   └── graphql/           // GraphQL resolvers
+│   │       ├── TechItemGraphQL.java     // GraphQL query/mutation resolver for tech items
+│   │       ├── GroupGraphQL.java        // GraphQL resolver for groups
+│   │       └── CategoryGraphQL.java     // GraphQL resolver for categories
+│   └── out/                    // Driven adapters (DB/MongoDB implementation)
+│       └── mongodb/
+│           ├── entity/         // MongoDB document entities (mirror domain entities, include ObjectId)
+│           │   ├── TechItemMongoEntity.java   // MongoDB document for tech items (description, logo, tags, timestamps)
+│           │   ├── GroupMongoEntity.java      // MongoDB document for groups (name, description, timestamps)
+│           │   └── CategoryMongoEntity.java   // MongoDB document for categories (name, description, timestamps)
+│           ├── repository/     // Spring Data MongoDB repositories
+│           │   ├── SpringDataTechItemRepository.java  // Extends MongoRepository<TechItemMongoEntity, String>
+│           │   ├── SpringDataGroupRepository.java     // For groups
+│           │   └── SpringDataCategoryRepository.java  // For categories
+│           └── mapper/         // Mapper classes to convert between domain and Mongo entities
+│               ├── TechItemMapper.java           // Maps TechItem <-> TechItemMongoEntity
+│               ├── GroupMapper.java              // Maps Group <-> GroupMongoEntity
+│               └── CategoryMapper.java           // Maps Category <-> CategoryMongoEntity
+│
+├── config/                     // Spring configuration classes
+│   ├── AppConfig.java          // General bean/config setup
+│   ├── MongoConfig.java        // MongoDB-related configuration
+│   └── ApiToggleConfig.java    // Config class to read and control API toggle flags (REST/GraphQL)
+│
+├── TechRadarApplication.java   // Entry point for Spring Boot application
+└── resources/
+    ├── application.yml         // Main config file (toggle APIs, DB URI)
+    ├── schema.graphqls         // GraphQL schema definition for tech radar domain
+    └── data/seed-data.json     // Optional initial seed data for DB
+
+// Clean Architecture Notes:
+// - domain/ is purely business logic and POJOs
+// - application/ defines use cases and service interfaces
+// - adapter/in is how input (REST or GraphQL) enters the system
+// - adapter/out is how system talks to the database (MongoDB)
+// - config/ enables API switch and MongoDB setup
+
+// You can switch between REST and GraphQL using a property in application.yml, and route requests conditionally using Spring profiles or custom config flags.

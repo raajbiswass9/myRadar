@@ -1,0 +1,57 @@
+// Root Package: com.company.techradar
+
+com.company.techradar/
+├── application/                 // Application layer (Use cases & business logic)
+│   ├── service/                 // Services implementing business rules
+│   │   ├── TechItemService.java        // Handles logic related to Tech Items (CRUD, filtering, etc.)
+│   │   ├── GroupService.java           // Handles Group CRUD logic
+│   │   └── CategoryService.java        // Handles Category CRUD logic
+│   └── port/
+│       └── out/                 // Output ports (Driven Adapters interface)
+│           ├── TechItemRepository.java // Interface for TechItem DB interactions
+│           ├── GroupRepository.java    // Interface for Group DB interactions
+│           └── CategoryRepository.java // Interface for Category DB interactions
+│
+├── domain/                     // Core business domain
+│   ├── model/
+│   │   ├── TechItem.java        // Entity representing a technology (e.g., Spring Boot, Java)
+│   │   ├── Group.java           // Entity representing a group (e.g., JVM, Python)
+│   │   └── Category.java        // Entity representing a category (e.g., Dev Tools)
+│
+├── adapter/
+│   ├── in/                     // Primary adapters (Input: REST/GraphQL)
+│   │   ├── rest/               // REST API layer
+│   │   │   ├── TechItemController.java   // REST controller for tech items
+│   │   │   ├── GroupController.java      // REST controller for groups
+│   │   │   └── CategoryController.java   // REST controller for categories
+│   │   └── graphql/           // GraphQL resolvers
+│   │       ├── TechItemGraphQL.java     // GraphQL query/mutation resolver for tech items
+│   │       ├── GroupGraphQL.java        // GraphQL resolver for groups
+│   │       └── CategoryGraphQL.java     // GraphQL resolver for categories
+│   └── out/                    // Driven adapters (DB/MongoDB implementation)
+│       └── mongodb/
+│           ├── entity/         // MongoDB document entities (mirror domain entities)
+│           │   ├── TechItemMongoEntity.java   // MongoDB document for tech items
+│           │   ├── GroupMongoEntity.java      // MongoDB document for groups
+│           │   └── CategoryMongoEntity.java   // MongoDB document for categories
+│           ├── repository/     // Spring Data MongoDB repositories
+│           │   ├── SpringDataTechItemRepository.java  // Extends MongoRepository
+│           │   ├── SpringDataGroupRepository.java     // For groups
+│           │   └── SpringDataCategoryRepository.java  // For categories
+│           └── mapper/         // Mapper classes to convert between domain and Mongo entities
+│               ├── TechItemMapper.java           // Maps TechItem <-> TechItemMongoEntity
+│               ├── GroupMapper.java              // Maps Group <-> GroupMongoEntity
+│               └── CategoryMapper.java           // Maps Category <-> CategoryMongoEntity
+│
+├── config/                     // Spring configuration classes
+│   ├── AppConfig.java          // General bean/config setup
+│   ├── MongoConfig.java        // MongoDB-related configuration
+│   └── ApiToggleConfig.java    // Config class to read and control API toggle flags
+│
+├── TechRadarApplication.java   // Entry point for Spring Boot application
+└── resources/
+    ├── application.yml         // Main config file (toggle APIs here)
+    ├── schema.graphqls         // GraphQL schema definition
+    └── data/seed-data.json     // Optional initial seed data
+
+// This structure clearly separates the domain, application logic, input adapters (REST/GraphQL), and output adapters (MongoDB), making it compliant with Clean Architecture and SOLID.

@@ -1,0 +1,41 @@
+1. TechItem Collection
+{
+  "_id": ObjectId("..."),
+  "name": "Spring Boot",
+  "description": "Production-grade framework for building Java microservices",
+  "logo": "https://cdn.company.com/logos/springboot.png",
+  "state": "ADOPT",                                // Enum: ADOPT, TRIAL, ASSESS, HOLD, EXIT
+  "categoryId": ObjectId("..."),                   // Reference to `Category` collection
+  "groupId": ObjectId("..."),                      // Reference to `Group` collection
+  "tags": ["microservices", "java", "framework"],  // List of tags for search/filter
+  "createdBy": "john.doe@company.com",             // Creator's email or user id
+  "updatedBy": "admin@company.com",                // Last updater
+  "createdAt": ISODate("2025-07-14T10:00:00Z"),
+  "updatedAt": ISODate("2025-07-14T11:30:00Z")
+}
+
+
+
+
+ 2. Group Collection
+ {
+  "_id": ObjectId("..."),
+  "name": "JVM",
+  "description": "Technologies and tools related to Java Virtual Machine ecosystem",
+  "createdBy": "admin@company.com",
+  "updatedBy": "admin@company.com",
+  "createdAt": ISODate("2025-07-10T08:00:00Z"),
+  "updatedAt": ISODate("2025-07-10T08:00:00Z")
+}
+
+
+ 3. Category Collection
+ {
+  "_id": ObjectId("..."),
+  "name": "Dev Tools",
+  "description": "Developer productivity tools including IDEs, debuggers, and automation tools",
+  "createdBy": "admin@company.com",
+  "updatedBy": "admin@company.com",
+  "createdAt": ISODate("2025-07-09T07:45:00Z"),
+  "updatedAt": ISODate("2025-07-09T07:45:00Z")
+}
