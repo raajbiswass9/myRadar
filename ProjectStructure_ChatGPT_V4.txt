@@ -1,0 +1,58 @@
+com.company.techradar/
+├── application/                          // Application Layer - Business use cases
+│   ├── service/                          // Services (use cases / application logic)
+│   │   ├── TechItemService.java
+│   │   ├── GroupService.java
+│   │   └── CategoryService.java
+│   └── port/
+│       └── out/                          // Output ports (interfaces for driven adapters)
+│           ├── TechItemRepository.java
+│           ├── GroupRepository.java
+│           └── CategoryRepository.java
+
+├── domain/                               // Domain Layer - Core business model
+│   └── model/
+│       ├── TechItem.java                 // Entity for technology item (e.g., Spring Boot)
+│       ├── Group.java                    // Entity for group (e.g., JVM)
+│       └── Category.java                 // Entity for category (e.g., Dev Tools)
+
+├── adapter/
+│   ├── in/                               // Primary adapters (incoming requests)
+│   │   ├── rest/                         // REST controllers
+│   │   │   ├── TechItemController.java
+│   │   │   ├── GroupController.java
+│   │   │   └── CategoryController.java
+│   │   └── graphql/                      // Placeholder for GraphQL (empty for now)
+│   │       └── (empty)
+│   └── out/                              // Driven adapters (external tools like DB)
+│       └── mongodb/                      // MongoDB adapter layer
+│           ├── entity/                   // MongoDB document representations
+│           │   ├── TechItemMongoEntity.java
+│           │   ├── GroupMongoEntity.java
+│           │   └── CategoryMongoEntity.java
+│           ├── repository/               // MongoDB Spring Data repositories
+│           │   ├── SpringDataTechItemRepository.java
+│           │   ├── SpringDataGroupRepository.java
+│           │   └── SpringDataCategoryRepository.java
+│           └── mapper/                   // Mappers between domain and persistence models
+│               ├── TechItemMapper.java
+│               ├── GroupMapper.java
+│               └── CategoryMapper.java
+
+├── config/                               // Configuration classes
+│   ├── AppConfig.java                    // Generic bean definitions
+│   ├── MongoConfig.java                  // MongoDB setup if needed
+│   ├── SwaggerConfig.java                // Swagger/OpenAPI config
+│   └── ApiToggleConfig.java              // Placeholder for toggling REST/GraphQL
+
+├── exception/                            // Global & custom exception handling
+│   ├── GlobalExceptionHandler.java       // Handles all exceptions in one place
+│   ├── NotFoundException.java            // Example custom exception
+│   └── BadRequestException.java          // Another example custom exception
+
+├── TechRadarApplication.java             // Spring Boot entry point
+
+└── resources/
+    ├── application.yml                   // Application config (including toggle flag)
+    ├── schema.graphqls                   // Placeholder GraphQL schema (can be empty)
+    └── data/seed-data.json               // Optional initial data for DB seeding
