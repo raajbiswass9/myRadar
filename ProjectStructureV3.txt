@@ -1,0 +1,45 @@
+com.company.techradar/
+│
+├── **domain**/                       # Pure business logic
+│   ├── model/
+│   │   ├── Category.java             # (1) Domain entity (No annotations)
+│   │   ├── TechItem.java             # (2) Contains business rules
+│   │   └── Group.java
+│   └── exceptions/
+│       ├── DomainException.java      # (3) Business rule violations
+│       └── InvalidCategoryException.java
+│
+├── **application**/                  # Use cases & ports
+│   ├── service/
+│   │   ├── CategoryService.java      # (4) @Service annotated
+│   │   ├── TechItemService.java
+│   │   └── GroupService.java
+│   └── port/
+│       ├── out/                      # (5) Database interfaces
+│       │   ├── CategoryRepository.java
+│       │   ├── TechItemRepository.java
+│       │   └── GroupRepository.java
+│       └── in/                       # (6) Input ports (if needed)
+│
+├── **adapter**/
+│   ├── in/                           # Delivery mechanisms
+│   │   └── rest/
+│   │       ├── CategoryController.java # (7) @RestController
+│   │       └── dto/                  # Request/Response objects
+│   │
+│   └── out/                          # Database implementations
+│       ├── mongodb/                  # (8) MongoDB adapter
+│       │   ├── entity/               # MongoDB documents
+│       │   ├── mapper/               # Domain ↔ Document converters
+│       │   └── repository/           # Spring Data Mongo interfaces
+│       │
+│       └── jpa/                      # (9) SQL adapter
+│           ├── entity/               # JPA entities
+│           ├── mapper/               # Domain ↔ Entity converters
+│           └── repository/           # Spring Data JPA interfaces
+│
+├── **config**/                       # (10) Database configurations
+│   ├── MongoConfig.java              # @Profile("mongo")
+│   └── JpaConfig.java                # @Profile("jpa")
+│
+└── TechRadarApplication.java         # (11) Main class

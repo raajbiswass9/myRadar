@@ -1,0 +1,25 @@
+@RestController
+@RequestMapping("/api/admin/categories")
+public class CategoryController {
+    private final CategoryService categoryService;
+
+    // POST - Create Category
+    @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
+    public CategoryResponse createCategory(
+            @RequestBody @Valid CreateCategoryRequest request,
+            @RequestHeader("X-Admin") String adminId) {
+        return CategoryResponse.fromDomain(
+            categoryService.createCategory(request.getName(), request.getDescription())
+        );
+    }
+
+    // GET - List All Categories
+    @GetMapping
+    public List<CategoryResponse> getAllCategories() {
+        return categoryService.getAllCategories()
+            .stream()
+            .map(CategoryResponse::fromDomain)
+            .toList();
+    }
+}
