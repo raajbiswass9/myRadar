@@ -1,25 +1,177 @@
+// Location: domain/model/Category.java
+public class Category {
+    private String id;
+    private String name;
+    private String description;
+    
+    // Constructor
+    public Category(String id, String name, String description) {
+        this.id = id;
+        this.name = name;
+        this.description = description;
+    }
+    
+    // Getters
+    public String getId() { return id; }
+    public String getName() { return name; }
+    public String getDescription() { return description; }
+}
+
+
+
+// Location: application/port/out/CategoryRepository.java
+public interface CategoryRepository {
+    List<Category> findAll();  // Core contract for GET operation
+}
+
+
+
+// Location: application/service/CategoryService.java
+@Service
+@RequiredArgsConstructor
+public class CategoryService {
+    private final CategoryRepository repository;
+    
+    public List<Category> getAllCategories() {
+        return repository.findAll();  // Delegates to repository
+    }
+}
+
+
+
+
+
+// Location: adapter/in/rest/CategoryController.java
 @RestController
-@RequestMapping("/api/admin/categories")
+@RequestMapping("/api/categories")
+@RequiredArgsConstructor
 public class CategoryController {
     private final CategoryService categoryService;
-
-    // POST - Create Category
-    @PostMapping
-    @ResponseStatus(HttpStatus.CREATED)
-    public CategoryResponse createCategory(
-            @RequestBody @Valid CreateCategoryRequest request,
-            @RequestHeader("X-Admin") String adminId) {
-        return CategoryResponse.fromDomain(
-            categoryService.createCategory(request.getName(), request.getDescription())
-        );
-    }
-
-    // GET - List All Categories
+    
     @GetMapping
-    public List<CategoryResponse> getAllCategories() {
-        return categoryService.getAllCategories()
-            .stream()
+    public ResponseEntity<List<CategoryResponse>> getAllCategories() {
+        List<Category> categories = categoryService.getAllCategories();
+        List<CategoryResponse> response = categories.stream()
             .map(CategoryResponse::fromDomain)
             .toList();
+        return ResponseEntity.ok(response);
     }
+}
+
+
+
+// Location: adapter/in/rest/dto/CategoryResponse.java
+public record CategoryResponse(
+    String id,
+    String name,
+    String description
+) {
+    public static CategoryResponse fromDomain(Category category) {
+        return new CategoryResponse(
+            category.getId(),
+            category.getName(),
+            category.getDescription()
+        );
+    }
+}
+
+
+// Location: adapter/out/mongodb/entity/CategoryMongoEntity.java
+@Document(collection = "categories")
+@Data
+@NoArgsConstructor
+public class CategoryMongoEntity {
+    @Id private String id;
+    private String name;
+    private String description;
+}
+
+
+
+// Location: adapter/out/mongodb/mapper/CategoryMongoMapper.java
+@Component
+public class CategoryMongoMapper {
+    public static Category toDomain(CategoryMongoEntity entity) {
+        return new Category(
+            entity.getId(),
+            entity.getName(),
+            entity.getDescription()
+        );
+    }
+}
+
+
+
+// Location: adapter/out/mongodb/repository/MongoCategoryRepository.java
+@Repository
+@Profile("mongo")
+public interface MongoCategoryRepository 
+    extends CategoryRepository, MongoRepository<CategoryMongoEntity, String> {
+    
+    @Override
+    default List<Category> findAll() {
+        return this.findAll().stream()
+            .map(CategoryMongoMapper::toDomain)
+            .toList();
+    }
+}
+
+
+// Location: adapter/out/jpa/entity/CategoryJpaEntity.java
+@Entity
+@Table(name = "categories")
+@Data
+@NoArgsConstructor
+public class CategoryJpaEntity {
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+    private String uuid;  // External ID
+    private String name;
+    private String description;
+}
+
+
+// Location: adapter/out/jpa/mapper/CategoryJpaMapper.java
+@Component
+public class CategoryJpaMapper {
+    public static Category toDomain(CategoryJpaEntity entity) {
+        return new Category(
+            entity.getUuid(),  // Using UUID for external reference
+            entity.getName(),
+            entity.getDescription()
+        );
+    }
+}
+
+
+// Location: adapter/out/jpa/repository/JpaCategoryRepository.java
+@Repository
+@Profile("jpa")
+public interface JpaCategoryRepository 
+    extends CategoryRepository, JpaRepository<CategoryJpaEntity, Long> {
+    
+    @Override
+    default List<Category> findAll() {
+        return this.findAll().stream()
+            .map(CategoryJpaMapper::toDomain)
+            .toList();
+    }
+}
+
+
+// Location: config/MongoConfig.java
+@Configuration
+@EnableMongoRepositories(basePackages = "com.company.techradar.adapter.out.mongodb")
+@Profile("mongo")
+public class MongoConfig {
+    // Auto-configured by Spring Boot
+}
+
+
+// Location: config/JpaConfig.java
+@Configuration
+@EnableJpaRepositories(basePackages = "com.company.techradar.adapter.out.jpa")
+@Profile("jpa")
+public class JpaConfig {
+    // Auto-configured by Spring Boot
 }
